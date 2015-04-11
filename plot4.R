@@ -1,0 +1,16 @@
+library(dplyr)
+library(lubridate)
+
+data <- read.csv("household_power_consumption.txt", sep=";")
+data <- mutate(data, Global_active_power = as.numeric(Global_active_power), Date = dmy(Date), DateTime = Date + hms(Time))
+data <- data[data$Date == ymd("2007-02-01") | data$Date == ymd("2007-02-02"), ]
+png("plot4.png", width = 480, height = 480)
+par(mfrow = c(2, 2))
+plot(data$Global_active_power ~ data$DateTime, type="l", ylab="Global Active Power", xlab="")
+plot(data$Voltage ~ data$DateTime, type="l", ylab="Voltage", xlab="datetime")
+plot(data$Sub_metering_1 ~ data$DateTime, type="l", ylab="Energy sub metering", xlab="")
+lines(data$Sub_metering_2 ~ data$DateTime, col="red")
+lines(data$Sub_metering_3 ~ data$DateTime, col="blue")
+legend('topright', lty=1, col=c('black', 'red', 'blue'), legend= c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), bty="n")
+plot(data$Global_reactive_power ~ data$DateTime, type="l", ylab="Global_reactive_power", xlab="datetime")
+dev.off()
